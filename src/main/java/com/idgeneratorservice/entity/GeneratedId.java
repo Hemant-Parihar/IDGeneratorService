@@ -29,10 +29,19 @@ public class GeneratedId {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * Constructs a new GeneratedId instance and sets the creation timestamp to the current date and time.
+     */
     public GeneratedId() {
         this.createdAt = LocalDateTime.now();
     }
 
+    /**
+     * Constructs a GeneratedId entity with the specified generated ID and strategy type.
+     *
+     * @param generatedId   the generated identifier value
+     * @param strategyType  the strategy used to generate the ID
+     */
     public GeneratedId(String generatedId, String strategyType) {
         this();
         this.generatedId = generatedId;
