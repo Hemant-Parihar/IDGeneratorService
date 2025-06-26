@@ -16,6 +16,11 @@ public class SnowflakeIdStrategy implements IdGenerationStrategy {
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + NODE_ID_BITS;
     private static final long NODE_ID_SHIFT = SEQUENCE_BITS;
 
+    /**
+     * Constructs a SnowflakeIdStrategy with a default node ID of 1.
+     *
+     * @throws IllegalArgumentException if the node ID is not within the valid range (0 to MAX_NODE_ID).
+     */
     public SnowflakeIdStrategy() {
         this.nodeId = 1L;
         if (nodeId > MAX_NODE_ID || nodeId < 0) {
@@ -23,6 +28,13 @@ public class SnowflakeIdStrategy implements IdGenerationStrategy {
         }
     }
 
+    /**
+     * Generates a unique ID string using the Snowflake algorithm.
+     *
+     * The generated ID encodes the current timestamp, node identifier, and a sequence number to ensure uniqueness within the same millisecond. If the system clock moves backwards, a RuntimeException is thrown.
+     *
+     * @return a unique ID as a string
+     */
     @Override
     public synchronized String generateId() {
         long timestamp = System.currentTimeMillis();
@@ -49,6 +61,12 @@ public class SnowflakeIdStrategy implements IdGenerationStrategy {
         return String.valueOf(id);
     }
 
+    /**
+     * Waits until the system clock advances past the specified timestamp and returns the new timestamp.
+     *
+     * @param lastTimestamp the timestamp to surpass
+     * @return the current system time in milliseconds after it exceeds lastTimestamp
+     */
     private long waitNextMillis(long lastTimestamp) {
         long timestamp = System.currentTimeMillis();
         while (timestamp <= lastTimestamp) {
@@ -57,6 +75,11 @@ public class SnowflakeIdStrategy implements IdGenerationStrategy {
         return timestamp;
     }
 
+    /**
+     * Returns the name of the ID generation strategy, which is "SNOWFLAKE".
+     *
+     * @return the string "SNOWFLAKE"
+     */
     @Override
     public String getStrategyName() {
         return "SNOWFLAKE";
